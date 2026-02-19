@@ -5,12 +5,37 @@ const cron = require("node-cron");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Basic route
+app.use(express.json());
+
+// Basic test route
 app.get("/", (req, res) => {
   res.send("Adhaan Automation Server Running");
 });
 
-// Function to fetch prayer times for Puttur
+/*
+ SIMPLE OAUTH MOCK (for Alexa Account Linking)
+*/
+
+// Authorization endpoint
+app.get("/auth", (req, res) => {
+  const redirectUri = req.query.redirect_uri;
+  const state = req.query.state;
+
+  // Automatically approve and send fake code
+  res.redirect(`${redirectUri}?code=AUTH_CODE&state=${state}`);
+});
+
+// Token endpoint
+app.post("/token", (req, res) => {
+  res.json({
+    access_token: "ACCESS_TOKEN",
+    token_type: "Bearer",
+    expires_in: 3600,
+    refresh_token: "REFRESH_TOKEN"
+  });
+});
+
+// Fetch prayer times
 async function getPrayerTimes() {
   try {
     const response = await fetch(
@@ -21,8 +46,6 @@ async function getPrayerTimes() {
 
     console.log("Today's Prayer Times:");
     console.log(timings);
-
-    // Later we will trigger Alexa here
 
   } catch (error) {
     console.error("Error fetching prayer times:", error);
@@ -38,3 +61,4 @@ cron.schedule("0 0 * * *", () => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

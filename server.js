@@ -18,12 +18,13 @@ app.get("/", (req, res) => {
 
 // Authorization endpoint
 app.get("/auth", (req, res) => {
-  const redirectUri = req.query.redirect_uri;
   const state = req.query.state;
 
-  // Automatically approve and send fake code
+  const redirectUri = "https://pitangui.amazon.com/api/skill/link/M10BWP3MP65WLC";
+
   res.redirect(`${redirectUri}?code=AUTH_CODE&state=${state}`);
 });
+
 
 // Token endpoint
 app.post("/token", (req, res) => {
